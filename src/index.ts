@@ -9,8 +9,6 @@ import * as Exchange from './exchange';
 
 Api.test();
 
-Exchange.test();
-
 [Ex00, Ex01, Ex02, Ex03, Ex04].forEach((x, i) => {
   console.log(`testing exercise ${i}`);
   x.test()
