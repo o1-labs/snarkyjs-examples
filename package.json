@@ -19,6 +19,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@o1labs/snarkyjs-web": "^0.1.18"
+    "@o1labs/snarkyjs-web": "^0.1.21"
   }
 }
