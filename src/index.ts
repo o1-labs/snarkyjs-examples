@@ -9,15 +9,13 @@ import * as Exchange from './exchange';
 
 Api.test();
 
-Ex00.test();
-
-/*
 Exchange.test();
+
 [Ex00, Ex01, Ex02, Ex03, Ex04].forEach((x, i) => {
   console.log(`testing exercise ${i}`);
   x.test()
 });
-*/
+
 document.body.appendChild(
   document.createTextNode('Tests completed!')
 );
