@@ -15,30 +15,6 @@ class Main extends Circuit {
   }
 }
 
-class Main2 extends Circuit {
-  @circuitMain
-  static main(solution: Field[][], instance: Field[][]) {
-    for (let i = 0; i < solution.length; ++i) {
-      for (let j = 0; j < solution[0].length; ++j) {
-        solution[i][j].equals(instance[i][j]).or(
-          instance[i][j].equals(0)
-        ).assertEquals(true);
-        // add assertTrue and assertFalse and assert()
-      }
-    }
-
-    for (let colIdx = 0; colIdx < solution[0].length; ++colIdx) {
-      for (let i = 1; i <= 9; ++i) {
-        let col = solution.map(row => row[colIdx]);
-        col.map(j => j.equals(i))
-        .reduce((x, y) => x.or(y))
-        .assertEquals(true);
-        // Bool.any?
-      }
-    }
-  }
-}
-
 export function test() {
   const kp = Main.generateKeypair();
 
