@@ -10,8 +10,7 @@ Prove:
 class Main extends Circuit {
   @circuitMain
   static main(preimage: Field, @public_ hash: Field) {
-    preimage.toBits(32);
-    Poseidon.hash([preimage]).assertEquals(hash);
+    throw 'TODO';
   }
 }
 

@@ -11,8 +11,7 @@ Prove:
 class Main extends Circuit {
   @circuitMain
   static main(y: Field, @public_ x: Field) {
-    let y3 = y.square().mul(y);
-    y3.assertEquals(x);
+    throw 'TODO';
   }
 }
 

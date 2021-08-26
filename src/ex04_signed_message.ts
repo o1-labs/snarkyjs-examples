@@ -1,4 +1,4 @@
-import { Field, Circuit, circuitMain, CircuitValue, PrivateKey, prop, PublicKey, public_, Signature } from "@o1labs/snarkyjs-web";import { time } from "./util";
+import { Field, Circuit, circuitMain, CircuitValue, PrivateKey, prop, PublicKey, public_, Signature, Collection } from "@o1labs/snarkyjs-web";import { time } from "./util";
 ;
 
 class Transaction extends CircuitValue {
@@ -29,10 +29,7 @@ class Main extends Circuit {
     receiverPrivKey: PrivateKey,
     @public_ lowerBound: Field)
   {
-    s.verify(transaction.sender, transaction.toFieldElements()).assertEquals(true);
-    transaction.receiver.assertEquals(
-      receiverPrivKey.toPublicKey());
-    transaction.amount.assertGt(lowerBound);
+    throw 'TODO';
   }
 }
 
