@@ -1,4 +1,4 @@
-import { Poseidon, Field, Bool, Group, Circuit as C, Scalar, PrivateKey, PublicKey, Signature, CircuitValue, prop, circuitMain, public_ } from "@o1labs/snarkyjs-web";
+import { Poseidon, Field, Bool, Group, Circuit as C, Scalar, PrivateKey, PublicKey, Signature, CircuitValue, prop, circuitMain, public_, Proof, Keypair } from "@o1labs/snarkyjs-web";
 import { Trade, HTTPSAttestation, Bytes, WebSnappRequest } from './exchange_lib';
 import * as Util from './util';
 
@@ -7,12 +7,10 @@ import * as Util from './util';
 // Prove I did a trade that did "X%" increase
 
 class Witness extends CircuitValue {
-  @prop pairId: Field;
   @prop attestation: HTTPSAttestation
 
-  constructor(pairId: Field, a: HTTPSAttestation) {
+  constructor(a: HTTPSAttestation) {
     super();
-    this.pairId = pairId;
     this.attestation = a;
   }
 }
@@ -66,6 +64,27 @@ function trade({ pairId, timestamp, price, quantity, isBuy } : TradeObject) : Tr
   return new Trade(Util.packBytes(pairId), new Bool(isBuy), new Field(price), new Field(quantity), new Field(timestamp));
 }
 
+export function prove(
+  kp: Keypair,
+  pairId: string,
+  trades: Array<TradeObject>): { proof: Proof, basisPointsGain: number }  {
+    // TODO: Calculate gain
+    const basisPointsGain : number = 0;
+
+    const publicInput = [ Util.packBytes(pairId), new Field(basisPointsGain) ];
+  
+    const witness = new Witness(
+      new HTTPSAttestation(
+        new Bytes(trades.map(trade)),
+        new Signature(new Field(1), Scalar.random())
+      )
+    );
+  
+    const proof = Main.prove([witness], publicInput, kp);
+
+    return { proof, basisPointsGain };
+}
+
 export function test() {
   globalThis._hello = Main;
   const kp = Main.generateKeypair();
@@ -74,7 +93,6 @@ export function test() {
   const publicInput = [ Util.packBytes('BTC/USDT'), new Field(1000) ];
   
   const witness = new Witness(
-    Util.packBytes('BTC/USDT'),
     new HTTPSAttestation(new Bytes([
         { pairId: 'BTC/USDT', price: 38553_21, quantity: 195_14, timestamp: 1629856167722, isBuy: true },
         { pairId: 'MINA/USDT', price: 3_27, quantity: 874_54, timestamp: 1629856164752, isBuy: false },
@@ -89,6 +107,7 @@ export function test() {
         { pairId: 'MINA/USDT', price: 3_27, quantity: 874_54, timestamp: 1629856164752, isBuy: false },
         { pairId: 'MINA/USDT', price: 3_27, quantity: 874_54, timestamp: 1629856164752, isBuy: false },
     ].map(trade)),
+
     new Signature(new Field(1), Scalar.random())
     )
   );
