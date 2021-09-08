@@ -68,18 +68,34 @@ export function prove(
   kp: Keypair,
   pairId: string,
   trades: Array<TradeObject>): { proof: Proof, basisPointsGain: number }  {
-    // TODO: Calculate gain
-    const basisPointsGain : number = 0;
+    let acc = {
+      totalSpend: 0,
+      totalGain: 0
+    };
+
+    trades.forEach(trade => {
+      if (trade.pairId === pairId) {
+        let tradeValue = trade.quantity * trade.price;
+        if (trade.isBuy) {
+          acc.totalSpend += tradeValue;
+        } else {
+          acc.totalGain += tradeValue;
+        }
+      }
+    });
+    let percentage = acc.totalGain / acc.totalSpend;
+    // TODO: Return error if percentage < 1
+    const basisPointsGain = Math.floor((percentage - 1) * 10000);
 
     const publicInput = [ Util.packBytes(pairId), new Field(basisPointsGain) ];
-  
+
     const witness = new Witness(
       new HTTPSAttestation(
         new Bytes(trades.map(trade)),
         new Signature(new Field(1), Scalar.random())
       )
     );
-  
+
     const proof = Main.prove([witness], publicInput, kp);
 
     return { proof, basisPointsGain };
@@ -91,7 +107,7 @@ export function test() {
 
   // Gain of at least 10%
   const publicInput = [ Util.packBytes('BTC/USDT'), new Field(1000) ];
-  
+
   const witness = new Witness(
     new HTTPSAttestation(new Bytes([
         { pairId: 'BTC/USDT', price: 38553_21, quantity: 195_14, timestamp: 1629856167722, isBuy: true },
